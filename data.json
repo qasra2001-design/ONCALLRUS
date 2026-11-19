@@ -7,13 +7,13 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. Sample Name",
-     "phone": "2100"
+     "name": "",
+     "phone": "5123"
     },
     {
      "role": "Second",
-     "name": "Dr. Sample Name",
-     "phone": "2101"
+     "name": "",
+     "phone": "5134"
     },
     {
      "role": "On call",
@@ -28,6 +28,10 @@
     "First": true,
     "Second": true,
     "On call": false
+   },
+   "dn": {
+    "First": false,
+    "Second": false
    }
   },
   {
@@ -37,13 +41,13 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. Sample Name",
-     "phone": "2102"
+     "name": "",
+     "phone": "5234"
     },
     {
      "role": "Second",
-     "name": "Dr. Sample Name",
-     "phone": "2103"
+     "name": "",
+     "phone": "5209"
     },
     {
      "role": "On call",
@@ -58,6 +62,10 @@
     "First": true,
     "Second": true,
     "On call": false
+   },
+   "dn": {
+    "First": false,
+    "Second": false
    }
   },
   {
@@ -67,18 +75,18 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. Sample Name",
-     "phone": "2104"
+     "name": "",
+     "phone": "5202"
     },
     {
      "role": "Second",
-     "name": "Dr. Sample Name",
-     "phone": "2105"
+     "name": "",
+     "phone": ""
     },
     {
      "role": "On call",
-     "name": "",
-     "phone": ""
+     "name": "Shareef",
+     "phone": "71702283"
     }
    ],
    "mode": "tier",
@@ -86,7 +94,11 @@
    "ph": true,
    "show": {
     "First": true,
-    "Second": true,
+    "Second": false,
+    "On call": true
+   },
+   "dn": {
+    "First": false,
     "On call": true
    }
   },
@@ -97,8 +109,8 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. Sample Name",
-     "phone": "2106"
+     "name": "",
+     "phone": "5110"
     },
     {
      "role": "Second",
@@ -107,8 +119,8 @@
     },
     {
      "role": "On call",
-     "name": "",
-     "phone": ""
+     "name": "Dr. Gwairia",
+     "phone": "92015170"
     }
    ],
    "mode": "tier",
@@ -116,8 +128,11 @@
    "ph": true,
    "show": {
     "First": true,
-    "Second": true,
+    "Second": false,
     "On call": true
+   },
+   "dn": {
+    "First": false
    }
   },
   {
@@ -127,8 +142,8 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. Sample Name",
-     "phone": "2108"
+     "name": "Dr. MAKARI",
+     "phone": ""
     },
     {
      "role": "Second",
@@ -138,7 +153,7 @@
     {
      "role": "On call",
      "name": "",
-     "phone": ""
+     "phone": "97259166 / 78295900"
     }
    ],
    "mode": "tier",
@@ -146,9 +161,13 @@
    "ph": true,
    "show": {
     "First": true,
-    "Second": true,
+    "Second": false,
     "On call": true
-   }
+   },
+   "dn": {
+    "On call": false
+   },
+   "roster": []
   },
   {
    "name": "Nephrology",
@@ -157,8 +176,8 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. Sample Name",
-     "phone": "2110"
+     "name": "5812 / 5813",
+     "phone": ""
     },
     {
      "role": "Second",
@@ -167,16 +186,16 @@
     },
     {
      "role": "On call",
-     "name": "",
-     "phone": ""
+     "name": "Dr. MOHEY",
+     "phone": "91641863"
     }
    ],
    "mode": "tier",
    "lay": "three",
-   "ph": false,
+   "ph": true,
    "show": {
     "First": true,
-    "Second": true,
+    "Second": false,
     "On call": true
    }
   },
@@ -187,13 +206,13 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. Sample Name",
-     "phone": "2112"
+     "name": "",
+     "phone": "5102"
     },
     {
      "role": "Second",
-     "name": "Dr. Sample Name",
-     "phone": "2113"
+     "name": "",
+     "phone": "5103"
     },
     {
      "role": "On call",
@@ -208,6 +227,10 @@
     "First": true,
     "Second": true,
     "On call": false
+   },
+   "dn": {
+    "First": false,
+    "Second": false
    }
   },
   {
@@ -217,13 +240,13 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. Sample Name",
-     "phone": "2114"
+     "name": "5322",
+     "phone": ""
     },
     {
      "role": "Second",
-     "name": "Dr. Sample Name",
-     "phone": "2115"
+     "name": "5010",
+     "phone": ""
     },
     {
      "role": "On call",
@@ -248,12 +271,12 @@
     {
      "role": "First",
      "name": "Dr. Sample Name",
-     "phone": "2116"
+     "phone": "5401"
     },
     {
      "role": "Second",
      "name": "Dr. Sample Name",
-     "phone": "2117"
+     "phone": "5614"
     },
     {
      "role": "On call",
@@ -268,6 +291,10 @@
     "First": true,
     "Second": true,
     "On call": false
+   },
+   "dn": {
+    "First": false,
+    "Second": false
    }
   },
   {
@@ -277,13 +304,13 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. Sample Name",
-     "phone": "2118"
+     "name": "5236",
+     "phone": ""
     },
     {
      "role": "Second",
-     "name": "Dr. Sample Name",
-     "phone": "2119"
+     "name": "3047",
+     "phone": ""
     },
     {
      "role": "On call",
@@ -307,8 +334,8 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. Sample Name",
-     "phone": "2120"
+     "name": "Dr. DALAL",
+     "phone": ""
     },
     {
      "role": "Second",
@@ -318,7 +345,7 @@
     {
      "role": "On call",
      "name": "",
-     "phone": ""
+     "phone": "94393924"
     }
    ],
    "mode": "tier",
@@ -326,8 +353,11 @@
    "ph": true,
    "show": {
     "First": true,
-    "Second": true,
+    "Second": false,
     "On call": true
+   },
+   "dn": {
+    "On call": false
    }
   },
   {
@@ -337,8 +367,8 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. Sample Name",
-     "phone": "2122"
+     "name": "Dr. ABDULRAHMAN",
+     "phone": ""
     },
     {
      "role": "Second",
@@ -348,7 +378,7 @@
     {
      "role": "On call",
      "name": "",
-     "phone": ""
+     "phone": "97675683"
     }
    ],
    "mode": "tier",
@@ -356,8 +386,11 @@
    "ph": true,
    "show": {
     "First": true,
-    "Second": true,
+    "Second": false,
     "On call": true
+   },
+   "dn": {
+    "On call": false
    }
   },
   {
@@ -367,8 +400,8 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. Sample Name",
-     "phone": "2124"
+     "name": "Dr. BADRIYA",
+     "phone": ""
     },
     {
      "role": "Second",
@@ -378,7 +411,7 @@
     {
      "role": "On call",
      "name": "",
-     "phone": ""
+     "phone": "92866430"
     }
    ],
    "mode": "tier",
@@ -386,78 +419,89 @@
    "ph": true,
    "show": {
     "First": true,
-    "Second": true,
+    "Second": false,
     "On call": true
+   },
+   "dn": {
+    "On call": false
+   }
+  },
+  {
+   "name": "New department",
+   "icon": "medicine",
+   "color": "#2f6fed",
+   "mode": "tier",
+   "lay": "one",
+   "ph": false,
+   "doctors": [
+    {
+     "role": "First",
+     "name": "",
+     "phone": ""
+    },
+    {
+     "role": "Second",
+     "name": "",
+     "phone": ""
+    },
+    {
+     "role": "On call",
+     "name": "",
+     "phone": ""
+    }
+   ],
+   "show": {
+    "First": true,
+    "Second": false,
+    "On call": false
    }
   }
  ],
  "ex": [
   {
-   "name": "PRO",
-   "icon": "pro",
-   "phone": "1101",
-   "color": "#5f7f9f"
-  },
-  {
-   "name": "Bed Manager",
-   "icon": "bed",
-   "phone": "1102",
-   "color": "#2e9e4f"
-  },
-  {
-   "name": "Cleaner",
-   "icon": "clean",
-   "phone": "1103",
-   "color": "#0e8fb0"
-  },
-  {
    "name": "LAB",
    "icon": "lab",
-   "phone": "1104",
+   "phone": "4802",
    "color": "#8250df"
   },
   {
    "name": "CT",
    "icon": "ct",
-   "phone": "1105",
+   "phone": "4813",
    "color": "#d93b3b"
   },
   {
    "name": "US",
    "icon": "us",
-   "phone": "1106",
+   "phone": "4817 / 4814 / 4810",
    "color": "#c2740a"
-  },
-  {
-   "name": "XR",
-   "icon": "xr",
-   "phone": "1107",
-   "color": "#3a8fd8"
   }
  ],
- "ext2Title": "More Extensions",
+ "ext2Title": "Ext",
  "ex2": [
   {
-   "name": "Pharmacy",
+   "name": "PRO",
    "icon": "pro",
-   "phone": "1201",
+   "phone": "5006",
    "color": "#2e9e4f"
   },
   {
-   "name": "Security",
+   "name": "BED MANAGER",
    "icon": "pro",
-   "phone": "1202",
+   "phone": "5011 / 5611",
    "color": "#d93b3b"
   },
   {
    "name": "Blood Bank",
    "icon": "lab",
-   "phone": "1203",
+   "phone": "4805",
    "color": "#c2185b"
   }
  ],
  "title": "Emergency Department · On-Call Doctors",
- "extTitle": "Extensions",
+ "extTitle": "Ext",
  "zoom": 1,
- "v3": 1
+ "v3": 1,
+ "theme": "dark",
+ "rot": 90
 }
