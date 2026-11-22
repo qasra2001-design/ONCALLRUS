@@ -85,8 +85,8 @@
     },
     {
      "role": "On call",
-     "name": "Shareef",
-     "phone": "71702283"
+     "name": "ALHARITH",
+     "phone": "78430972"
     }
    ],
    "mode": "tier",
@@ -119,8 +119,8 @@
     },
     {
      "role": "On call",
-     "name": "Dr. Gwairia",
-     "phone": "92015170"
+     "name": "Dr. FAHMY",
+     "phone": "91920805"
     }
    ],
    "mode": "tier",
@@ -142,7 +142,7 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. MAKARI",
+     "name": "Dr. OSMAN",
      "phone": ""
     },
     {
@@ -153,7 +153,7 @@
     {
      "role": "On call",
      "name": "",
-     "phone": "97259166 / 78295900"
+     "phone": "94433809"
     }
    ],
    "mode": "tier",
@@ -334,7 +334,7 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. DALAL",
+     "name": "Dr. HAJAR",
      "phone": ""
     },
     {
@@ -345,7 +345,7 @@
     {
      "role": "On call",
      "name": "",
-     "phone": "94393924"
+     "phone": "97316566"
     }
    ],
    "mode": "tier",
@@ -367,7 +367,7 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. ABDULRAHMAN",
+     "name": "Dr. BALQIS",
      "phone": ""
     },
     {
@@ -378,7 +378,7 @@
     {
      "role": "On call",
      "name": "",
-     "phone": "97675683"
+     "phone": "99721422"
     }
    ],
    "mode": "tier",
