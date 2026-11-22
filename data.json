@@ -152,7 +152,7 @@
     },
     {
      "role": "On call",
-     "name": "",
+     "name": "Dr. OSMAN",
      "phone": "94433809"
     }
    ],
@@ -160,14 +160,24 @@
    "lay": "three",
    "ph": true,
    "show": {
-    "First": true,
+    "First": false,
     "Second": false,
     "On call": true
    },
    "dn": {
-    "On call": false
+    "On call": true
    },
-   "roster": []
+   "roster": [],
+   "sides": [
+    {
+     "r": "On call",
+     "m": "name"
+    },
+    {
+     "r": "On call",
+     "m": "num"
+    }
+   ]
   },
   {
    "name": "Nephrology",
@@ -334,7 +344,7 @@
    "doctors": [
     {
      "role": "First",
-     "name": "Dr. HAJAR",
+     "name": "",
      "phone": ""
     },
     {
@@ -344,7 +354,7 @@
     },
     {
      "role": "On call",
-     "name": "",
+     "name": "Dr. HAJAR",
      "phone": "97316566"
     }
    ],
@@ -352,13 +362,23 @@
    "lay": "three",
    "ph": true,
    "show": {
-    "First": true,
+    "First": false,
     "Second": false,
     "On call": true
    },
    "dn": {
-    "On call": false
-   }
+    "On call": true
+   },
+   "sides": [
+    {
+     "r": "On call",
+     "m": "name"
+    },
+    {
+     "r": "On call",
+     "m": "num"
+    }
+   ]
   },
   {
    "name": "Dermatology",
@@ -377,7 +397,7 @@
     },
     {
      "role": "On call",
-     "name": "",
+     "name": "Dr. BALQIS",
      "phone": "99721422"
     }
    ],
@@ -385,13 +405,23 @@
    "lay": "three",
    "ph": true,
    "show": {
-    "First": true,
+    "First": false,
     "Second": false,
     "On call": true
    },
    "dn": {
-    "On call": false
-   }
+    "On call": true
+   },
+   "sides": [
+    {
+     "r": "On call",
+     "m": "name"
+    },
+    {
+     "r": "On call",
+     "m": "num"
+    }
+   ]
   },
   {
    "name": "Psychiatry",
@@ -410,7 +440,7 @@
     },
     {
      "role": "On call",
-     "name": "",
+     "name": "Dr. BADRYIA",
      "phone": "92866430"
     }
    ],
@@ -418,13 +448,23 @@
    "lay": "three",
    "ph": true,
    "show": {
-    "First": true,
+    "First": false,
     "Second": false,
     "On call": true
    },
    "dn": {
-    "On call": false
-   }
+    "On call": true
+   },
+   "sides": [
+    {
+     "r": "On call",
+     "m": "name"
+    },
+    {
+     "r": "On call",
+     "m": "num"
+    }
+   ]
   }
  ],
  "ex": [
