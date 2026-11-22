@@ -217,6 +217,16 @@ main{grid-auto-rows:minmax(0,1fr)}
 .card .docs.dr{border-left:0}
 .card .docs .rl{display:none}
 .card .docs li.nonm .ph{display:block;font-size:calc(clamp(18px,4.2cqw,60px)*var(--k)*var(--fp,1)*var(--gp,1))}
+.panel.wide{max-width:min(1250px,96vw);width:96vw}
+.montbl{overflow:auto;max-height:62vh;border:1px solid var(--ln);border-radius:8px}
+.montbl table{border-collapse:separate;border-spacing:0;width:100%}
+.montbl th,.montbl td{border-bottom:1px solid var(--ln);padding:3px 4px;text-align:left}
+.montbl thead th{position:sticky;top:0;z-index:2;text-align:center;padding:6px}
+.montbl tbody th{position:sticky;left:0;background:var(--panel);z-index:1;white-space:nowrap;font-size:.9rem}
+.montbl td{min-width:9.5em}
+.montbl td input{width:100%;display:block;margin:1px 0;padding:.25em .4em;font-size:.95rem}
+.montbl tr.we td,.montbl tr.we th{background:rgba(128,128,128,.12)}
+.montbl tr.tdy td,.montbl tr.tdy th{background:rgba(47,111,237,.22)}
 </style></head>
 <body>
 <header><h1 id="ttl"></h1><span id="clock"></span><span id="view"></span><span id="tools"></span><button id="tgl" aria-pressed="false">Edit</button></header>
@@ -260,19 +270,30 @@ const seed=()=>({sp:[
 ].map(([name,icon,color],i)=>({name,icon,color,doctors:[D("Consultant","Dr. Sample Name","2"+String(100+i*2)),D("Resident","Dr. Sample Name","2"+String(101+i*2))]})),
 ex:[["PRO","pro","1101","#5f7f9f"],["Bed Manager","bed","1102","#2e9e4f"],["Cleaner","clean","1103","#0e8fb0"],["LAB","lab","1104","#8250df"],["CT","ct","1105","#d93b3b"],["US","us","1106","#c2740a"],["XR","xr","1107","#3a8fd8"]].map(([name,icon,phone,color])=>({name,icon,phone,color}))});
 const KEY="ed-oncall-v1";let S,edit=false;
-try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+var TV=/[?&]tv\b/.test(location.search);
+if(!TV)try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+/* monthly on-call file (oncall.json): {"2026-11":{"Orthopedic":{"1":"Dr. Name | 7843 0972"}}} */
+var OC={},ocDirty=false,OCK="ed-oncall-oc-v1";
+if(!TV)try{const j=JSON.parse(localStorage.getItem(OCK));if(j&&j.d){OC=j.d;ocDirty=!!j.dirty}}catch(e){}
+function ocSave(){if(!TV)try{localStorage.setItem(OCK,JSON.stringify({d:OC,dirty:ocDirty}))}catch(e){}}
+function ocParse(v){if(v&&typeof v=="object")return{name:String(v.name||"").trim(),phone:String(v.phone||"").trim()};v=String(v==null?"":v);const i=v.lastIndexOf("|");return i<0?{name:v.trim(),phone:""}:{name:v.slice(0,i).trim(),phone:v.slice(i+1).trim()}}
+function ocGet(dept,d){const m=OC[d.slice(0,7)],x=m&&m[dept];if(!x)return null;const e=ocParse(x[+d.slice(8)]);return e.name||e.phone?e:null}
 const iso=n=>n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0");
 const td=()=>iso(new Date());
 const nice=d=>new Date(d+"T00:00").toLocaleDateString([], {weekday:"short",day:"numeric",month:"short"});
 const pd=t=>{t=(t||"").trim();let m;if(/^\d{4}-\d{2}-\d{2}$/.test(t))return t;if(m=t.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/))return m[3]+"-"+m[2].padStart(2,"0")+"-"+m[1].padStart(2,"0");return""};
-const shown=s=>{const r=(s.roster||[]).filter(x=>x.d==td());return r.length?r:s.doctors};
+const RR=["First","Second","On call"];
+const shown=s=>{const L=shown0(s),e=ocGet(s.name,td());return e?L.map(d=>d.role=="On call"?{role:"On call",name:e.name,phone:e.phone}:d):L};
+const shown0=s=>{const r=(s.roster||[]).filter(x=>x.d==td());if(!r.length)return s.doctors;
+if(!r.every(x=>RR.includes(x.role)))return r;
+return s.doctors.flatMap(d=>{const m=r.filter(x=>x.role==d.role);return m.length?m:[d]})};
 const hn=(s,d)=>(s.dn||{})[d.role]===false;
 const rows=s=>list(s).filter(d=>!hn(s,d)||(d.phone||"").trim());
 const list=s=>shown(s).filter(d=>(s.show||{})[d.role]!==false);
 const colh=s=>`<li class="colh"><div class="rl">On call</div><div class="nm">Name</div><div class="ph">${s.mode=="tier"?"Phone No.":"Phone"}</div></li>`;
 const tag=(s,i)=>{const n=(s.roster||[]).filter(x=>x.d==td()).length;return `<div class="tag">${edit?`Rows: <select data-s="sp" data-i="${i}" data-f="lay" aria-label="Rows" style="width:auto"><option value="two"${s.lay=="two"?" selected":""}>First &amp; Second</option><option value="three"${s.lay=="three"?" selected":""}>First, Second &amp; On call</option><option value="one"${s.lay!="two"&&s.lay!="three"?" selected":""}>First only</option></select> · Default list`:n?"On duty today · "+nice(td()):"Default list · no roster for today"}</div>`};
 let ros=null,msg="",lastD=td();
-let thm=false,edi=null,stg=false,noClick=0;
+let thm=false,edi=null,stg=false,noClick=0,monM=null,monMsg="";
 const CK=["c_title","c_head","c_name","c_num"];
 function applyTheme(){const R=document.documentElement;R.dataset.theme=S.theme||"auto";
 const m={c_title:"--ttlc",c_head:"--hdc",c_name:"--nmc",c_num:"--lblc"};
@@ -332,11 +353,26 @@ keep(o,()=>{o.innerHTML=`<div class="panel" role="dialog" aria-label="Board sett
 <div class="step"><span>Whole board</span><button data-a="zm" data-k="-" aria-label="Smaller">\u2212</button><b>${pc(S.zoom)}</b><button data-a="zm" data-k="+" aria-label="Larger">+</button></div>
 ${stp("First extensions box",pc(S.exZ),"exsz","ex","z")}${stp("Second extensions box",pc(S.exZ2),"exsz","ex2","z")}${stp("Extensions width",pc(S.exW),"exsz","ex","w")}
 <div class="fl">Font sizes for all boxes</div>${gst("Box names","t")}${gst("First / Second labels","r")}${gst("Doctor names","n")}${gst("Phone numbers","p")}
+<div class="row"><button class="on" data-a="mono">\u{1F4C5} Monthly on-call roster</button></div>
 <div class="fl">Publishing (GitHub)</div><p class="msg" style="margin:.2rem 0">Edit here, then download data.json and upload it to your GitHub repository (replace the old one). Every screen shows the new version after it refreshes.</p><div class="row"><button class="on" data-a="dl">\u2B07 Download data.json</button><button data-a="disc">Discard my changes and reload from GitHub</button></div>
 <div class="row"><button data-a="thm">Theme and colours</button><button data-a="rsz">Reset box sizes</button><button class="x" data-a="rst">Reset sample data</button></div></div>`})}
+const MN=m=>{const [y,mo]=m.split("-").map(Number);return new Date(y,mo-1,1).toLocaleDateString([], {month:"long",year:"numeric"})};
+const monCols=()=>S.sp.map((s,i)=>[s,i]).filter(([s])=>(s.show||{})["On call"]===true);
+const monGet=(s,d)=>{const m=OC[d.slice(0,7)],x=m&&m[s.name];return ocParse(x&&x[+d.slice(8)])};
+function monSet(i,d,name,phone){const s=S.sp[i],k=d.slice(0,7),D=+d.slice(8),m=OC[k]=OC[k]||{},x=m[s.name]=m[s.name]||{};if(name||phone)x[D]=name+(phone?" | "+phone:"");else delete x[D];ocDirty=true;ocSave()}
+function renderMonth(o){const [Y,M]=monM.split("-").map(Number),n=new Date(Y,M,0).getDate(),C=monCols(),TD=td();
+let head="<th>Day</th>"+C.map(([s])=>`<th style="background:${E(s.color)};color:#fff">${E(s.name)}</th>`).join("");
+let body="";for(let k=1;k<=n;k++){const d=monM+"-"+String(k).padStart(2,"0"),w=new Date(Y,M-1,k).getDay();
+body+=`<tr class="${d==TD?"tdy":""}${w==5||w==6?" we":""}"><th>${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][w]} ${k}</th>`+C.map(([s,i])=>{const e=monGet(s,d);return `<td><input data-m="1" data-mf="name" data-c="${i}" data-d="${d}" value="${E(e.name)}" placeholder="Name" aria-label="${E(s.name)} on call, day ${k}, name"><input data-m="1" data-mf="phone" data-c="${i}" data-d="${d}" value="${E(e.phone)}" placeholder="Phone" aria-label="${E(s.name)} on call, day ${k}, phone"></td>`}).join("")+"</tr>"}
+o.hidden=false;
+keep(o,()=>{o.innerHTML=`<div class="panel wide" role="dialog" aria-label="Monthly on-call roster"><h3><span class="t">\u{1F4C5} Monthly on-call roster</span><button class="on" data-a="monx">Done</button></h3>
+<div class="seg" style="align-items:center"><button data-a="mprev" aria-label="Previous month">\u2039</button><b style="min-width:10em;text-align:center">${E(MN(monM))}</b><button data-a="mnext" aria-label="Next month">\u203a</button><button data-a="mnow">This month</button><button data-a="mprint">Print / save as PDF</button><button class="on" data-a="ocdl">\u2B07 Download oncall.json</button><button data-a="ocdisc">Discard my changes</button></div>
+<p class="msg">Type the on-call doctor for each day. The board shows today\u2019s doctor automatically and switches at midnight. First and Second keep their usual numbers. This table is saved in <b>oncall.json</b>: download it and upload it to GitHub (replace the old one). You can also edit oncall.json directly on GitHub. ${C.length?"":"No box has On call ticked yet: tick it in the department's edit form."}</p>
+<div class="montbl"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>
+<details style="margin-top:.8rem"><summary>Paste a whole month for one department</summary><p class="msg">One doctor per line, starting from day 1: name, phone (separated by a tab or comma; rows copied from Excel work). A blank line skips that day.</p><div class="two"><label class="fl">Department<select id="mpd">${C.map(([s,i])=>`<option value="${i}">${E(s.name)}</option>`).join("")}</select></label></div><textarea id="mpb" rows="5" style="width:100%"></textarea><div class="row"><button class="on" data-a="mpaste">Fill the month</button></div><p class="msg">${E(monMsg)}</p></details></div>`})}
 function renderDlg(){const o=document.getElementById("dlg"),s=ros==null?null:S.sp[ros];
 if(thm){renderTheme(o);return}
-if(!s){ros=null;if(edi){renderEdit(o);return}if(stg){renderSettings(o);return}o.hidden=true;o.innerHTML="";return}
+if(!s){ros=null;if(monM){renderMonth(o);return}if(edi){renderEdit(o);return}if(stg){renderSettings(o);return}o.hidden=true;o.innerHTML="";return}
 const sc=o.firstChild?o.firstChild.scrollTop:0,R=s.roster=s.roster||[],TD=td();R.sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0);
 let h="",last="";
 R.forEach((x,k)=>{if(x.d!=last){last=x.d;h+=`<h4 class="${x.d==TD?"tdy":x.d<TD?"past":""}">${x.d==TD?"Today · ":""}${nice(x.d)}</h4>`}
@@ -353,10 +389,11 @@ ${h||'<p class="msg">No roster entries yet.</p>'}
 o.firstChild.scrollTop=sc}
 let COLS=3;
 const side=()=>S.exSide===undefined?"tb":(S.exSide||"l");
-const isPort=()=>{const r=S.rot||0,rt=r==90||r==270,w=rt?innerHeight:innerWidth,h=rt?innerWidth:innerHeight,v=S.view||"auto";return v=="v"?true:v=="h"?false:w<h};
+const RT=()=>edit?0:(S.rot||0);
+const isPort=()=>{const r=RT(),rt=r==90||r==270,w=rt?innerHeight:innerWidth,h=rt?innerWidth:innerHeight,v=S.view||"auto";return v=="v"?true:v=="h"?false:w<h};
 const eff=()=>{const x=side();return isPort()?(x=="l"||x=="s"?"t":x=="r"?"b":x):x};
 const szc=(s,i)=>{const b=(k,l,t)=>`<button data-a="sz" data-i="${i}" data-k="${k}" aria-label="${t}">${l}</button>`;return `<div class="sz">Width ${b("cs-","−","Narrower")}${b("cs+","+","Wider")}<span>Height</span> ${b("rs-","−","Shorter")}${b("rs+","+","Taller")}<span>Text</span> ${b("fz-","A−","Smaller text")}${b("fz+","A+","Larger text")}<span>Phone</span> ${b("ph",s.ph?"On":"Off","Show or hide phone numbers")}</div>`};
-function applyLayout(){const W=innerWidth,H=innerHeight,r=S.rot||0,rt=r==90||r==270,w=rt?H:W,h=rt?W:H,v=S.view||"auto",port=v=="v"?true:v=="h"?false:w<h,d=document.documentElement,b=document.body;
+function applyLayout(){const W=innerWidth,H=innerHeight,r=RT(),rt=r==90||r==270,w=rt?H:W,h=rt?W:H,v=S.view||"auto",port=v=="v"?true:v=="h"?false:w<h,d=document.documentElement,b=document.body;
 d.style.setProperty("--vw",w/100+"px");d.style.setProperty("--vh",h/100+"px");
 d.classList.toggle("port",port);d.classList.toggle("land",!port);
 b.style.cssText=rt?`position:fixed;top:0;left:0;width:${w}px;height:${h}px;transform-origin:0 0;transform:${r==270?`translateX(${W}px) rotate(90deg)`:`translateY(${H}px) rotate(-90deg)`}`:"";
@@ -377,7 +414,7 @@ S.sp.forEach(s=>{if(s.disp=="num"){s.dn={First:false,Second:false,"On call":true
 S.sp.forEach(s=>{const R=["First","Second","On call"];if(!s.show){const n=s.lay=="three"?3:s.lay=="two"?2:1;s.show={First:true,Second:n>1,"On call":n>2}}
 s.doctors=s.doctors||[];while(s.doctors.length<3)s.doctors.push(D("","",""));s.doctors.forEach((d,k)=>{if(k<3)d.role=R[k]});s.doctors.length=3})};
 if(!S||!S.sp||!S.ex)S=seed();fix();
-const save=()=>{if(edit)S.__dirty=1;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(edit&&typeof push=="function")push()};
+const save=()=>{if(TV)return;if(edit)S.__dirty=1;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(edit&&typeof push=="function")push()};
 const opts=v=>Object.keys(LBL).map(k=>`<option value="${k}"${k==v?" selected":""}>${EM[k]} ${LBL[k]}</option>`).join("");
 const extPanel=(k,tk)=>"<h3>"+E(S[tk])+"</h3>"+S[k].map((x,i)=>`<div class="ex" data-ek="${k}" data-ei="${i}" ${edit?`data-a="edit" data-k="${k}" data-i="${i}"`:""} style="--c:${E(x.color)}">${edit?`<span class="dh" data-drag="${k}" data-i="${i}" title="Drag to move" aria-label="Drag to move">\u283f</span>`:""}${pic(x.icon,x.emoji)}<div><b>${E(x.name)}</b><span class="n">${E(x.phone)}</span></div></div>`).join("")+(edit?`<div class="ex addtile" data-a="aex" data-s="${k}" role="button" tabindex="0">+ Add</div>`:"");
 function render(keepDlg){
@@ -386,7 +423,7 @@ document.body.classList.toggle("edit",edit);{const W=document.querySelector(".wr
 document.getElementById("view").innerHTML="";
 document.documentElement.style.setProperty("--z",S.zoom);{const G=S.gfs||{};for(const k of "trnp")document.documentElement.style.setProperty("--g"+k,G[k]||1)}document.documentElement.style.setProperty("--exw",S.exW||1);document.documentElement.style.setProperty("--ez",S.exZ||1);document.documentElement.style.setProperty("--exw2",S.exW2||1);document.documentElement.style.setProperty("--ez2",S.exZ2||1);
 document.getElementById("ttl").innerHTML=edit?`<span data-a="settings" title="Change the board title" style="cursor:pointer">${E(S.title)} \u270E</span>`:E(S.title);
-document.getElementById("tools").innerHTML=(S.__dirty?`<button class="on" data-a="dl" title="Download the file, then upload it to GitHub to publish">\u2B07 Download data.json</button>`:"")+(edit?`<button class="on" data-a="asp">+ Add department</button><button data-a="settings">Settings</button>`:"");
+document.getElementById("tools").innerHTML=(ocDirty?`<button class="on" data-a="ocdl" title="Download the on-call file, then upload it to GitHub">\u2B07 Download oncall.json</button>`:"")+(S.__dirty?`<button class="on" data-a="dl" title="Download the file, then upload it to GitHub to publish">\u2B07 Download data.json</button>`:"")+(edit?`<button class="on" data-a="asp">+ Add department</button><button class="on" data-a="mono">\u{1F4C5} Monthly on-call roster</button><button data-a="settings">Settings</button>`:"");
 const g=document.getElementById("grid"),a=document.getElementById("ext");
 a.innerHTML=extPanel("ex","extTitle");
 const a2=document.getElementById("ext2");a2.hidden=!edit&&!(S.ex2||[]).length;a2.innerHTML=extPanel("ex2","ext2Title");a.style.flexGrow=S.ex.length+1;a2.style.flexGrow=(S.ex2||[]).length+1;
@@ -394,7 +431,8 @@ g.innerHTML=S.sp.map((s,i)=>`<section class="card${s.ph?" sph":""}" data-di="${i
 return `<ul class="docs dl" style="flex-grow:${Math.max(L.length,1)}">${L.map(li).join("")}</ul><div class="hd">${edit?`<span class="dh" data-drag="sp" data-i="${i}" title="Drag to move" aria-label="Drag to move">\u283f</span>`:""}${pic(s.icon,s.emoji)}<h2>${E(s.name)}</h2></div><ul class="docs dr" style="flex-grow:${Math.max(Rt.length,1)*1.0}">${Rt.map(li).join("")}</ul>`})()}</section>`).join("")+(edit?'<button class="card addsp" data-a="asp">+ Add department</button>':"");
 if(!keepDlg)renderDlg();fit();
 }
-document.addEventListener("input",e=>{const t=e.target,d=t.dataset;if(!d.f)return;
+document.addEventListener("input",e=>{const mt=e.target;if(mt.dataset&&mt.dataset.m){const c=+mt.dataset.c,d=mt.dataset.d,g=f=>document.querySelector(`#dlg input[data-m][data-mf="${f}"][data-c="${c}"][data-d="${d}"]`).value.trim();monSet(c,d,g("name"),g("phone"));render(true);return}
+const t=e.target,d=t.dataset;if(!d.f)return;
 const o=d.s=="app"?S:d.s=="ros"?S.sp[d.i].roster[d.j]:d.s=="ex"?S.ex[d.i]:d.s=="ex2"?S.ex2[d.i]:d.s=="sp"?S.sp[d.i]:S.sp[d.i].doctors[d.j];o[d.f]=t.value;save();if(d.s=="app"&&d.f[0]=="c"&&d.f[1]=="_"){applyTheme();return}
 if(d.s=="ros")return;render(true)});
 document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest(".dh"))return;if(Date.now()<noClick)return;const b=e.target.closest("[data-a]");if(!b)return;const d=b.dataset,i=+d.i,j=+d.j;
@@ -409,6 +447,17 @@ edel:()=>{S.sp.splice(i,1);edi=null},xdel:()=>{S[d.s].splice(i,1);edi=null},
 emove:()=>{const L=S[d.s],m=i+(+d.k);if(m>=0&&m<L.length){[L[i],L[m]]=[L[m],L[i]];edi={k:d.s,i:m}}},
 xmove:()=>{const to=d.s=="ex"?"ex2":"ex",[m]=S[d.s].splice(i,1);S[to].push(m);edi={k:to,i:S[to].length-1}},
 setview:()=>{S.view=d.k=="auto"?"":d.k},setrot:()=>{S.rot=+d.k},
+ocdl:()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(OC,null,1)],{type:"application/json"}));a.download="oncall.json";document.body.appendChild(a);a.click();a.remove();ocDirty=false;ocSave();monMsg=""},
+ocdisc:()=>{try{localStorage.removeItem(OCK)}catch(e){}ocDirty=false;OC={};loadOC(true)},
+mono:()=>{monM=td().slice(0,7);stg=false},monx:()=>{monM=null},
+mprev:()=>{const [y,m]=monM.split("-").map(Number),d=new Date(y,m-2,1);monM=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")},
+mnext:()=>{const [y,m]=monM.split("-").map(Number),d=new Date(y,m,1);monM=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")},
+mnow:()=>{monM=td().slice(0,7)},
+mpaste:()=>{const i=+document.getElementById("mpd").value,L=document.getElementById("mpb").value.split(/\r?\n/),n=new Date(+monM.slice(0,4),+monM.slice(5),0).getDate();let c=0;L.slice(0,n).forEach((l,k)=>{if(!l.trim())return;const p=l.split(/[\t,]/).map(x=>x.trim());monSet(i,monM+"-"+String(k+1).padStart(2,"0"),p[0]||"",p[1]||"");c++});monMsg=c?"Filled "+c+" days.":"Nothing to fill."},
+mprint:()=>{const [Y,M]=monM.split("-").map(Number),n=new Date(Y,M,0).getDate(),C=monCols(),w=window.open("","_blank");if(!w)return;
+let h=`<!doctype html><meta charset=utf-8><title>On-call roster ${E(MN(monM))}</title><style>body{font:13px system-ui,sans-serif;margin:16px}h1{font-size:18px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #999;padding:4px 6px;text-align:left}th{background:#eee}tr.we td,tr.we th{background:#f4f4f4}</style><h1>Emergency Department \u00B7 On-call roster \u00B7 ${E(MN(monM))}</h1><table><tr><th>Day</th>${C.map(([s])=>"<th>"+E(s.name)+"</th>").join("")}</tr>`;
+for(let k=1;k<=n;k++){const d=monM+"-"+String(k).padStart(2,"0"),wd=new Date(Y,M-1,k).getDay();h+=`<tr class="${wd==5||wd==6?"we":""}"><th>${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][wd]} ${k}</th>`+C.map(([s])=>{const e=monGet(s,d);return "<td>"+E(e.name)+(e.phone?" \u00B7 "+E(e.phone):"")+"</td>"}).join("")+"</tr>"}
+w.document.write(h+"</table><script>onload=()=>print()<\/script>");w.document.close()},
 thm:()=>{thm=true},thmx:()=>{thm=false},theme:()=>{S.theme=d.k},creset:()=>{delete S[d.k]},call:()=>{CK.forEach(k=>delete S[k])},fit:()=>{S.nofit=!S.nofit},lay:()=>{S.view=({auto:"h",h:"v",v:"auto"})[S.view||"auto"]},rot:()=>{S.rot=({0:90,90:270,270:0})[S.rot||0]},ros:()=>{ros=i;msg=""},rcl:()=>{ros=null},
 radd:()=>{const g=id=>document.getElementById(id).value.trim(),f=g("rf"),t=g("rt")||f,n=g("rn");
 if(!f||!n){msg="Enter a date and a doctor name.";return}
@@ -432,12 +481,12 @@ else{const tk=t.dataset.ek,[m]=S[d.k].splice(d.i,1);const ti=t.dataset.ei!==unde
 save();render()};
 document.addEventListener("pointerup",e=>endDrag(e,true));document.addEventListener("pointercancel",e=>endDrag(e,false));
 const T=document.getElementById("tgl");
-T.onclick=()=>{const was=edit;edit=!edit;if(was&&typeof push=="function")push(true);if(!edit){edi=null;stg=false;thm=false;ros=null}T.textContent=edit?"Done":"Edit";T.classList.toggle("on",edit);T.setAttribute("aria-pressed",edit);render()};
+T.onclick=()=>{const was=edit;edit=!edit;if(was&&typeof push=="function")push(true);if(!edit){edi=null;stg=false;thm=false;ros=null}T.textContent=edit?"Done":"Edit";T.classList.toggle("on",edit);T.setAttribute("aria-pressed",edit);applyLayout();render()};
 const clk=()=>{document.getElementById("clock").textContent=new Date().toLocaleString([], {weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})};
 clk();setInterval(clk,15000);render();
 let curDay=td();setInterval(()=>{if(td()!==curDay&&!edit&&ros==null){curDay=td();render()}},20000);
 addEventListener("resize",()=>{applyLayout();fit()});if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>fit());
-const closeTop=()=>{if(thm)thm=false;else if(ros!=null)ros=null;else if(edi)edi=null;else stg=false;renderDlg()};
+const closeTop=()=>{if(thm)thm=false;else if(ros!=null)ros=null;else if(monM)monM=null;else if(edi)edi=null;else stg=false;renderDlg()};
 document.addEventListener("keydown",e=>{if(e.key=="Escape")closeTop()});
 document.getElementById("dlg").onclick=e=>{if(e.target.id=="dlg")closeTop()};
 
@@ -450,6 +499,7 @@ if(document.getElementById("dlg")&&stg)renderDlg()}catch(e){}})();
 
 /* shared data file: data.json next to this page is the one copy every screen shows */
 var lastRemote="";
-async function loadData(){try{const r=await fetch("data.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const j=await r.json();if(!j||!j.sp||!j.ex)return;const t=JSON.stringify(j);if(S.__dirty||edit||t===lastRemote)return;lastRemote=t;S=j;fix();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}applyLayout();render()}catch(e){}}
-loadData();setInterval(loadData,300000);
+async function loadData(){try{const r=await fetch("data.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const j=await r.json();if(!j||!j.sp||!j.ex)return;const t=JSON.stringify(j);if((!TV&&(S.__dirty||edit))||t===lastRemote)return;lastRemote=t;S=j;fix();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}applyLayout();render()}catch(e){}}
+async function loadOC(force){try{const r=await fetch("oncall.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const j=await r.json();if(!j||typeof j!="object")return;if(!force&&!TV&&(ocDirty||edit))return;OC=j;ocSave();render(true)}catch(e){}}
+loadData();loadOC();setInterval(()=>{loadData();loadOC()},300000);
 </script></body></html>
