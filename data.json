@@ -425,36 +425,6 @@
    "dn": {
     "On call": false
    }
-  },
-  {
-   "name": "New department",
-   "icon": "medicine",
-   "color": "#2f6fed",
-   "mode": "tier",
-   "lay": "one",
-   "ph": false,
-   "doctors": [
-    {
-     "role": "First",
-     "name": "",
-     "phone": ""
-    },
-    {
-     "role": "Second",
-     "name": "",
-     "phone": ""
-    },
-    {
-     "role": "On call",
-     "name": "",
-     "phone": ""
-    }
-   ],
-   "show": {
-    "First": true,
-    "Second": false,
-    "On call": false
-   }
   }
  ],
  "ex": [
