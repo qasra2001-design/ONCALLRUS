@@ -209,12 +209,12 @@ main{grid-auto-rows:minmax(0,1fr)}
 .card .docs .ph{font-size:calc(clamp(16px,3.4cqw,46px)*var(--k)*var(--fp,1)*var(--gp,1))}
 .card .hd h2~.pic{order:2}
 .card .hd .pic{flex:0 0 auto}
-.card .hd .pic{zoom:calc(var(--z,1)*var(--cz,1)*var(--ch,1)*0.6)}
+.card .hd .pic{zoom:calc(var(--z,1)*var(--cz,1)*var(--ch,1)*0.5)}
 .card .docs li{overflow:hidden}
 /* First | name + icon | Second / On call */
-.card .hd{flex:0 0 34%;flex-direction:row;flex-wrap:nowrap;justify-content:safe center;align-items:center;gap:1.2rem;padding:.3rem .6rem .5rem;border:0;position:relative;text-align:center}
+.card .hd{flex:0 0 42%;flex-direction:row;flex-wrap:nowrap;justify-content:safe center;align-items:center;gap:.9rem;padding:.3rem .6rem .5rem;border:0;position:relative;text-align:center}
 .card .hd h2{order:0;font-weight:900;text-shadow:0 1px 3px rgba(0,0,0,.35);overflow-wrap:normal;word-break:normal;hyphens:none;width:auto;min-width:0;flex:0 0 auto;white-space:nowrap;text-align:center}
-.card .hd .pic{order:-1;width:clamp(34px,calc(5.2*var(--vh)),64px);height:clamp(34px,calc(5.2*var(--vh)),64px);font-size:clamp(20px,calc(3.1*var(--vh)),38px);zoom:calc(var(--z,1)*var(--cz,1)*var(--ch,1)*0.6)}
+.card .hd .pic{order:-1;width:clamp(34px,calc(5.2*var(--vh)),64px);height:clamp(34px,calc(5.2*var(--vh)),64px);font-size:clamp(20px,calc(3.1*var(--vh)),38px);zoom:calc(var(--z,1)*var(--cz,1)*var(--ch,1)*0.5)}
 .card .docs{flex:1 1 0;min-width:0}
 .card .docs.dr{border-left:0}
 .card .docs .rl{display:none}
@@ -315,7 +315,7 @@ g.querySelectorAll(".card:not(.addsp)").forEach(c=>{const D=[...c.querySelectorA
 const okD=()=>D.every(d=>d.scrollHeight<=d.clientHeight+1&&d.scrollWidth<=d.clientWidth+1&&[...d.children].every(l=>l.scrollHeight<=l.clientHeight+1&&l.scrollWidth<=l.clientWidth+1&&[...l.children].every(m=>m.scrollWidth<=m.clientWidth+1)));
 const okH=()=>h.scrollHeight<=h.clientHeight+1&&h.scrollWidth<=h.clientWidth+1&&[...h.children].filter(m=>!m.classList.contains("dh")).reduce((a,m)=>a+m.offsetWidth+(parseFloat(getComputedStyle(h).columnGap)||0),0)<=h.clientWidth*.92&&[...h.children].every(m=>m.classList.contains("dh")||m.scrollWidth<=m.clientWidth+1);
 const go=(v,ok)=>{let lo=.3,hi=5;c.style.setProperty(v,hi);if(ok())return;for(let i=0;i<11;i++){const m=(lo+hi)/2;c.style.setProperty(v,m);if(ok())lo=m;else hi=m}c.style.setProperty(v,lo)};
-go("--cf",okD);go("--ch",okH)});if(!S.nouni){const C=[...g.querySelectorAll(".card:not(.addsp)")].filter(c=>c.style.getPropertyValue("--cf")),m=Math.min(...C.map(c=>+c.style.getPropertyValue("--cf")));if(isFinite(m))C.forEach(c=>c.style.setProperty("--cf",m))}}
+go("--cf",okD);go("--ch",okH)});if(!S.nouni){const C=[...g.querySelectorAll(".card:not(.addsp)")].filter(c=>c.style.getPropertyValue("--cf")),m=Math.min(...C.map(c=>+c.style.getPropertyValue("--cf")));if(isFinite(m))C.forEach(c=>c.style.setProperty("--cf",m));const H=[...g.querySelectorAll(".card:not(.addsp)")].filter(c=>c.style.getPropertyValue("--ch")),hm=Math.min(...H.map(c=>+c.style.getPropertyValue("--ch")));if(isFinite(hm)){H.forEach(c=>{c.style.setProperty("--ch",hm);const t=c.querySelector(".hd h2");if(t)t.style.minWidth=""});const W=Math.max(...H.map(c=>{const t=c.querySelector(".hd h2");return t?t.offsetWidth:0}));H.forEach(c=>{const t=c.querySelector(".hd h2");if(t)t.style.minWidth=W+"px"})}}}
 function renderTheme(o){const T=[["auto","Auto"],["light","Light"],["dark","Dark"],["contrast","High contrast"],["navy","Navy"],["paper","Paper"]],cur=S.theme||"auto";
 const L=[["c_title","Board title"],["c_head","Box headings"],["c_name","Names"],["c_num","Numbers and First / Second"]];
 o.hidden=false;o.innerHTML=`<div class="panel" role="dialog" aria-label="Theme and colours"><h3><span class="t">Theme and colours</span><button data-a="thmx">Close</button></h3>
@@ -512,4 +512,6 @@ var lastRemote="";
 async function loadData(){try{const r=await fetch("data.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const j=await r.json();if(!j||!j.sp||!j.ex)return;const t=JSON.stringify(j);if((!TV&&(S.__dirty||edit))||t===lastRemote)return;lastRemote=t;S=j;fix();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}applyLayout();render()}catch(e){}}
 async function loadOC(force){try{const r=await fetch("oncall.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const j=await r.json();if(!j||typeof j!="object")return;if(!force&&!TV&&(ocDirty||edit))return;OC=j;ocSave();render(true)}catch(e){}}
 loadData();loadOC();setInterval(()=>{loadData();loadOC()},300000);
+let pgSig=null;async function chkPage(){try{const r=await fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const t=await r.text(),g=t.length+":"+t.slice(-300);if(pgSig===null)pgSig=g;else if(g!==pgSig&&!edit)location.reload()}catch(e){}}
+if(TV){chkPage();setInterval(chkPage,300000)}
 </script></body></html>
