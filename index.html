@@ -188,7 +188,7 @@ body.drg{cursor:grabbing;user-select:none}
 .panel .x{border-color:#e5484d}
 /* strip layout: name + icon on the left, doctors side by side on the right */
 .card{flex-direction:row;min-height:0}
-.card .hd{flex-direction:column;justify-content:center;align-items:center;gap:.25rem;flex:0 0 27%;min-width:0;padding:.3rem .4rem;text-align:center;border-right:3px solid rgba(255,255,255,.55);position:relative}
+.card .hd{flex-direction:column;justify-content:center;align-items:center;gap:.5rem;flex:0 0 27%;min-width:0;padding:.3rem .4rem;text-align:center;border-right:3px solid rgba(255,255,255,.55);position:relative}
 .card .hd h2{flex:none;order:-1;font-size:clamp(14px,3.2cqw,34px);line-height:1.05;overflow-wrap:anywhere}
 .card .hd .pic{width:clamp(34px,calc(5.2*var(--vh)),64px);height:clamp(34px,calc(5.2*var(--vh)),64px);font-size:clamp(20px,calc(3.1*var(--vh)),38px)}
 .card .hd .dh{position:absolute;top:2px;left:2px;order:-2;font-size:1.7em;padding:0 .2em}
@@ -207,12 +207,14 @@ main{grid-auto-rows:minmax(0,1fr)}
 .card .docs .rl{font-size:calc(clamp(12px,1.9cqw,24px)*var(--k)*var(--fr,1)*var(--gr,1))}
 .card .docs .nm{font-size:calc(clamp(16px,3.4cqw,46px)*var(--k)*var(--fn,1)*var(--gn,1))}
 .card .docs .ph{font-size:calc(clamp(16px,3.4cqw,46px)*var(--k)*var(--fp,1)*var(--gp,1))}
+.card .hd h2~.pic{order:2}
+.card .hd .pic{flex:0 0 auto}
 .card .hd .pic{zoom:calc(var(--z,1)*var(--cz,1)*var(--ch,1)*0.6)}
 .card .docs li{overflow:hidden}
 /* First | name + icon | Second / On call */
-.card .hd{flex:0 0 24%;flex-direction:column;justify-content:safe center;align-items:center;gap:.3rem;padding:.3rem .6rem .5rem;border:0;position:relative;text-align:center}
-.card .hd h2{order:0;overflow-wrap:normal;word-break:normal;hyphens:none;width:100%;min-width:0;flex:0 1 auto;text-align:center}
-.card .hd .pic{order:1;width:clamp(34px,calc(5.2*var(--vh)),64px);height:clamp(34px,calc(5.2*var(--vh)),64px);font-size:clamp(20px,calc(3.1*var(--vh)),38px);zoom:calc(var(--z,1)*var(--cz,1)*var(--ch,1)*0.6)}
+.card .hd{flex:0 0 34%;flex-direction:row;flex-wrap:nowrap;justify-content:safe center;align-items:center;gap:.25rem;padding:.3rem .6rem .5rem;border:0;position:relative;text-align:center}
+.card .hd h2{order:0;font-weight:900;text-shadow:0 1px 3px rgba(0,0,0,.35);overflow-wrap:normal;word-break:normal;hyphens:none;width:auto;min-width:0;flex:0 0 auto;white-space:nowrap;text-align:center}
+.card .hd .pic{order:-1;width:clamp(34px,calc(5.2*var(--vh)),64px);height:clamp(34px,calc(5.2*var(--vh)),64px);font-size:clamp(20px,calc(3.1*var(--vh)),38px);zoom:calc(var(--z,1)*var(--cz,1)*var(--ch,1)*0.6)}
 .card .docs{flex:1 1 0;min-width:0}
 .card .docs.dr{border-left:0}
 .card .docs .rl{display:none}
@@ -311,7 +313,7 @@ if(S.nofit){R.style.setProperty("--fit",1);R.style.setProperty("--fitx",1);g.que
 R.style.setProperty("--fit",1);run("--fitx",okA,1.25);
 g.querySelectorAll(".card:not(.addsp)").forEach(c=>{const D=[...c.querySelectorAll(".docs")],h=c.querySelector(".hd");if(!D.length||!h)return;
 const okD=()=>D.every(d=>d.scrollHeight<=d.clientHeight+1&&d.scrollWidth<=d.clientWidth+1&&[...d.children].every(l=>l.scrollHeight<=l.clientHeight+1&&l.scrollWidth<=l.clientWidth+1&&[...l.children].every(m=>m.scrollWidth<=m.clientWidth+1)));
-const okH=()=>h.scrollHeight<=h.clientHeight+1&&h.scrollWidth<=h.clientWidth+1&&[...h.children].every(m=>m.classList.contains("dh")||m.scrollWidth<=m.clientWidth+1);
+const okH=()=>h.scrollHeight<=h.clientHeight+1&&h.scrollWidth<=h.clientWidth+1&&[...h.children].filter(m=>!m.classList.contains("dh")).reduce((a,m)=>a+m.offsetWidth,0)<=h.clientWidth*.9&&[...h.children].every(m=>m.classList.contains("dh")||m.scrollWidth<=m.clientWidth+1);
 const go=(v,ok)=>{let lo=.3,hi=5;c.style.setProperty(v,hi);if(ok())return;for(let i=0;i<11;i++){const m=(lo+hi)/2;c.style.setProperty(v,m);if(ok())lo=m;else hi=m}c.style.setProperty(v,lo)};
 go("--cf",okD);go("--ch",okH)});if(!S.nouni){const C=[...g.querySelectorAll(".card:not(.addsp)")].filter(c=>c.style.getPropertyValue("--cf")),m=Math.min(...C.map(c=>+c.style.getPropertyValue("--cf")));if(isFinite(m))C.forEach(c=>c.style.setProperty("--cf",m))}}
 function renderTheme(o){const T=[["auto","Auto"],["light","Light"],["dark","Dark"],["contrast","High contrast"],["navy","Navy"],["paper","Paper"]],cur=S.theme||"auto";
@@ -433,8 +435,8 @@ document.getElementById("tools").innerHTML=(ocDirty?`<button class="on" data-a="
 const g=document.getElementById("grid"),a=document.getElementById("ext");
 a.innerHTML=extPanel("ex","extTitle");
 const a2=document.getElementById("ext2");a2.hidden=!edit&&!(S.ex2||[]).length;a2.innerHTML=extPanel("ex2","ext2Title");a.style.flexGrow=S.ex.length+1;a2.style.flexGrow=(S.ex2||[]).length+1;
-g.innerHTML=S.sp.map((s,i)=>`<section class="card${s.ph?" sph":""}" data-di="${i}" ${edit?`data-a="edit" data-k="sp" data-i="${i}"`:""} style="--c:${E(s.color)};--cz:${s.fz||1};--ft:${(s.fs||{}).t||1};--fr:${(s.fs||{}).r||1};--fn:${(s.fs||{}).n||1};--fp:${(s.fs||{}).p||1};grid-column:span ${Math.min(s.cs||1,COLS)};grid-row:span ${s.rs||1}">${(()=>{if(s.sides&&s.sides.length==2){const all=shown(s),sd=c=>{let d=all.find(x=>x.role==c.r)||{name:"",phone:""};if(c.r=="On call"&&c.m!="num"&&!d.name){const f=all.find(x=>x.role=="First");if(f&&f.name)d={...d,name:f.name}}const t=c.m=="name"?(d.name||""):c.m=="num"?(d.phone||""):"";return `<li class="${c.m=="name"?"onlyname":c.m=="num"?"nonm":"sb"}">${c.m=="num"?"":`<div class="nm">${E(d.name||"")}</div>`}${c.m=="name"?"":`<div class="ph">${E(d.phone||"")}</div>`}</li>`};return `<ul class="docs dl" style="flex-grow:1">${sd(s.sides[0])}</ul><div class="hd">${edit?`<span class="dh" data-drag="sp" data-i="${i}" title="Drag to move" aria-label="Drag to move">\u283f</span>`:""}${pic(s.icon,s.emoji)}<h2>${E(s.name)}</h2></div><ul class="docs dr" style="flex-grow:1">${sd(s.sides[1])}</ul>`}const R=rows(s),L=R.filter(d=>d.role=="First"),Rt=R.filter(d=>d.role!="First"),li=d=>`<li class="${hn(s,d)?"nonm":""}"><div class="rl">${E(d.role)}</div>${hn(s,d)?"":`<div class="nm">${d.name?E(d.name):"\u2014"}</div>`}<div class="ph">${E(d.phone)}</div></li>`;
-return `<ul class="docs dl" style="flex-grow:${Math.max(L.length,1)}">${L.map(li).join("")}</ul><div class="hd">${edit?`<span class="dh" data-drag="sp" data-i="${i}" title="Drag to move" aria-label="Drag to move">\u283f</span>`:""}${pic(s.icon,s.emoji)}<h2>${E(s.name)}</h2></div><ul class="docs dr" style="flex-grow:${Math.max(Rt.length,1)*1.0}">${Rt.map(li).join("")}</ul>`})()}</section>`).join("")+(edit?'<button class="card addsp" data-a="asp">+ Add department</button>':"");
+g.innerHTML=S.sp.map((s,i)=>`<section class="card${s.ph?" sph":""}" data-di="${i}" ${edit?`data-a="edit" data-k="sp" data-i="${i}"`:""} style="--c:${E(s.color)};--cz:${s.fz||1};--ft:${(s.fs||{}).t||1};--fr:${(s.fs||{}).r||1};--fn:${(s.fs||{}).n||1};--fp:${(s.fs||{}).p||1};grid-column:span ${Math.min(s.cs||1,COLS)};grid-row:span ${s.rs||1}">${(()=>{if(s.sides&&s.sides.length==2){const all=shown(s),sd=c=>{let d=all.find(x=>x.role==c.r)||{name:"",phone:""};if(c.r=="On call"&&c.m!="num"&&!d.name){const f=all.find(x=>x.role=="First");if(f&&f.name)d={...d,name:f.name}}const t=c.m=="name"?(d.name||""):c.m=="num"?(d.phone||""):"";return `<li class="${c.m=="name"?"onlyname":c.m=="num"?"nonm":"sb"}">${c.m=="num"?"":`<div class="nm">${E(d.name||"")}</div>`}${c.m=="name"?"":`<div class="ph">${E(d.phone||"")}</div>`}</li>`};return `<ul class="docs dl" style="flex-grow:1">${sd(s.sides[0])}</ul><div class="hd">${edit?`<span class="dh" data-drag="sp" data-i="${i}" title="Drag to move" aria-label="Drag to move">\u283f</span>`:""}${pic(s.icon,s.emoji)}<h2>${E(s.name)}</h2>${pic(s.icon,s.emoji)}</div><ul class="docs dr" style="flex-grow:1">${sd(s.sides[1])}</ul>`}const R=rows(s),L=R.filter(d=>d.role=="First"),Rt=R.filter(d=>d.role!="First"),li=d=>`<li class="${hn(s,d)?"nonm":""}"><div class="rl">${E(d.role)}</div>${hn(s,d)?"":`<div class="nm">${d.name?E(d.name):"\u2014"}</div>`}<div class="ph">${E(d.phone)}</div></li>`;
+return `<ul class="docs dl" style="flex-grow:${Math.max(L.length,1)}">${L.map(li).join("")}</ul><div class="hd">${edit?`<span class="dh" data-drag="sp" data-i="${i}" title="Drag to move" aria-label="Drag to move">\u283f</span>`:""}${pic(s.icon,s.emoji)}<h2>${E(s.name)}</h2>${pic(s.icon,s.emoji)}</div><ul class="docs dr" style="flex-grow:${Math.max(Rt.length,1)*1.0}">${Rt.map(li).join("")}</ul>`})()}</section>`).join("")+(edit?'<button class="card addsp" data-a="asp">+ Add department</button>':"");
 if(!keepDlg)renderDlg();fit();
 }
 document.addEventListener("input",e=>{const mt=e.target;if(mt.dataset&&mt.dataset.m){const c=+mt.dataset.c,d=mt.dataset.d,g=f=>document.querySelector(`#dlg input[data-m][data-mf="${f}"][data-c="${c}"][data-d="${d}"]`).value.trim();monSet(c,d,g("name"),g("phone"));render(true);return}
