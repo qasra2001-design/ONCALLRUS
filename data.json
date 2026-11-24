@@ -32,7 +32,8 @@
    "dn": {
     "First": false,
     "Second": false
-   }
+   },
+   "ab": "MED"
   },
   {
    "name": "Surgery",
@@ -66,7 +67,8 @@
    "dn": {
     "First": false,
     "Second": false
-   }
+   },
+   "ab": "SURG"
   },
   {
    "name": "Orthopedic",
@@ -100,7 +102,8 @@
    "dn": {
     "First": false,
     "On call": true
-   }
+   },
+   "ab": "ORTHO"
   },
   {
    "name": "ENT",
@@ -133,7 +136,8 @@
    },
    "dn": {
     "First": false
-   }
+   },
+   "ab": "ENT"
   },
   {
    "name": "Ophthalmology",
@@ -177,7 +181,8 @@
      "r": "On call",
      "m": "num"
     }
-   ]
+   ],
+   "ab": "OPHTH"
   },
   {
    "name": "Nephrology",
@@ -207,7 +212,8 @@
     "First": true,
     "Second": false,
     "On call": true
-   }
+   },
+   "ab": "NEPH"
   },
   {
    "name": "Cardiology",
@@ -241,7 +247,8 @@
    "dn": {
     "First": false,
     "Second": false
-   }
+   },
+   "ab": "CARD"
   },
   {
    "name": "Pediatrics",
@@ -271,7 +278,8 @@
     "First": true,
     "Second": true,
     "On call": false
-   }
+   },
+   "ab": "PEDS"
   },
   {
    "name": "Gyne",
@@ -305,7 +313,8 @@
    "dn": {
     "First": false,
     "Second": false
-   }
+   },
+   "ab": "GYNE"
   },
   {
    "name": "Pediatric Surgery",
@@ -335,7 +344,8 @@
     "First": true,
     "Second": true,
     "On call": false
-   }
+   },
+   "ab": "PED SURG"
   },
   {
    "name": "Dental",
@@ -378,7 +388,8 @@
      "r": "On call",
      "m": "num"
     }
-   ]
+   ],
+   "ab": "DENT"
   },
   {
    "name": "Dermatology",
@@ -421,7 +432,8 @@
      "r": "On call",
      "m": "num"
     }
-   ]
+   ],
+   "ab": "DERM"
   },
   {
    "name": "Psychiatry",
@@ -464,7 +476,8 @@
      "r": "On call",
      "m": "num"
     }
-   ]
+   ],
+   "ab": "PSY"
   }
  ],
  "ex": [
